@@ -17,6 +17,35 @@ type Query implements Node {
     nodeId: ID!
   ): Node
 
+  """Reads and enables pagination through a set of `Item`."""
+  items(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Item`."""
+    orderBy: [ItemsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ItemCondition
+  ): ItemsConnection
+
   """Reads and enables pagination through a set of `User`."""
   users(
     """Only read the first `n` values of the set."""
@@ -45,7 +74,14 @@ type Query implements Node {
     """
     condition: UserCondition
   ): UsersConnection
+  item(id: Int!): Item
   user(id: Int!): User
+
+  """Reads a single `Item` using its globally unique `ID`."""
+  itemByNodeId(
+    """The globally unique `ID` to be used in selecting a single `Item`."""
+    nodeId: ID!
+  ): Item
 
   """Reads a single `User` using its globally unique `ID`."""
   userByNodeId(
@@ -60,6 +96,119 @@ interface Node {
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+}
+
+"""A connection to a list of `Item` values."""
+type ItemsConnection {
+  """A list of `Item` objects."""
+  nodes: [Item!]!
+
+  """
+  A list of edges which contains the `Item` and cursor to aid in pagination.
+  """
+  edges: [ItemsEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Item` you could get from the connection."""
+  totalCount: Int!
+}
+
+type Item implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: Int!
+  item: String!
+  lot: String!
+  arrivalDate: Date!
+  outOfStockDate: Date
+  price: BigFloat!
+  sellText: String!
+}
+
+"""The day, does not include a time."""
+scalar Date
+
+"""
+A floating point number that requires more precision than IEEE 754 binary 64
+"""
+scalar BigFloat
+
+"""A `Item` edge in the connection."""
+type ItemsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Item` at the end of the edge."""
+  node: Item!
+}
+
+"""A location in a connection that can be used for resuming pagination."""
+scalar Cursor
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
+}
+
+"""Methods to use when ordering `Item`."""
+enum ItemsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  ITEM_ASC
+  ITEM_DESC
+  LOT_ASC
+  LOT_DESC
+  ARRIVAL_DATE_ASC
+  ARRIVAL_DATE_DESC
+  OUT_OF_STOCK_DATE_ASC
+  OUT_OF_STOCK_DATE_DESC
+  PRICE_ASC
+  PRICE_DESC
+  SELL_TEXT_ASC
+  SELL_TEXT_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+A condition to be used against `Item` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input ItemCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `item` field."""
+  item: String
+
+  """Checks for equality with the object’s `lot` field."""
+  lot: String
+
+  """Checks for equality with the object’s `arrivalDate` field."""
+  arrivalDate: Date
+
+  """Checks for equality with the object’s `outOfStockDate` field."""
+  outOfStockDate: Date
+
+  """Checks for equality with the object’s `price` field."""
+  price: BigFloat
+
+  """Checks for equality with the object’s `sellText` field."""
+  sellText: String
 }
 
 """A connection to a list of `User` values."""
@@ -99,24 +248,6 @@ type UsersEdge {
   node: User!
 }
 
-"""A location in a connection that can be used for resuming pagination."""
-scalar Cursor
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: Cursor
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: Cursor
-}
-
 """Methods to use when ordering `User`."""
 enum UsersOrderBy {
   NATURAL
@@ -153,6 +284,14 @@ input UserCondition {
 The root mutation type which contains root level fields which mutate data.
 """
 type Mutation {
+  """Creates a single `Item`."""
+  createItem(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateItemInput!
+  ): CreateItemPayload
+
   """Creates a single `User`."""
   createUser(
     """
@@ -160,6 +299,22 @@ type Mutation {
     """
     input: CreateUserInput!
   ): CreateUserPayload
+
+  """Updates a single `Item` using its globally unique id and a patch."""
+  updateItemByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateItemByNodeIdInput!
+  ): UpdateItemPayload
+
+  """Updates a single `Item` using a unique key and a patch."""
+  updateItem(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateItemInput!
+  ): UpdateItemPayload
 
   """Updates a single `User` using its globally unique id and a patch."""
   updateUserByNodeId(
@@ -177,6 +332,22 @@ type Mutation {
     input: UpdateUserInput!
   ): UpdateUserPayload
 
+  """Deletes a single `Item` using its globally unique id."""
+  deleteItemByNodeId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteItemByNodeIdInput!
+  ): DeleteItemPayload
+
+  """Deletes a single `Item` using a unique key."""
+  deleteItem(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteItemInput!
+  ): DeleteItemPayload
+
   """Deletes a single `User` using its globally unique id."""
   deleteUserByNodeId(
     """
@@ -192,6 +363,52 @@ type Mutation {
     """
     input: DeleteUserInput!
   ): DeleteUserPayload
+}
+
+"""The output of our create `Item` mutation."""
+type CreateItemPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Item` that was created by this mutation."""
+  item: Item
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Item`. May be used by Relay 1."""
+  itemEdge(
+    """The method to use when ordering `Item`."""
+    orderBy: [ItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ItemsEdge
+}
+
+"""All input for the create `Item` mutation."""
+input CreateItemInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Item` to be created by this mutation."""
+  item: ItemInput!
+}
+
+"""An input for mutations affecting `Item`"""
+input ItemInput {
+  id: Int
+  item: String!
+  lot: String!
+  arrivalDate: Date!
+  outOfStockDate: Date
+  price: BigFloat!
+  sellText: String!
 }
 
 """The output of our create `User` mutation."""
@@ -235,6 +452,74 @@ input UserInput {
   name: String!
   password: String!
   email: String!
+}
+
+"""The output of our update `Item` mutation."""
+type UpdateItemPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Item` that was updated by this mutation."""
+  item: Item
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Item`. May be used by Relay 1."""
+  itemEdge(
+    """The method to use when ordering `Item`."""
+    orderBy: [ItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ItemsEdge
+}
+
+"""All input for the `updateItemByNodeId` mutation."""
+input UpdateItemByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Item` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Item` being updated.
+  """
+  patch: ItemPatch!
+}
+
+"""Represents an update to a `Item`. Fields that are set will be updated."""
+input ItemPatch {
+  id: Int
+  item: String
+  lot: String
+  arrivalDate: Date
+  outOfStockDate: Date
+  price: BigFloat
+  sellText: String
+}
+
+"""All input for the `updateItem` mutation."""
+input UpdateItemInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Item` being updated.
+  """
+  patch: ItemPatch!
+  id: Int!
 }
 
 """The output of our update `User` mutation."""
@@ -299,6 +584,54 @@ input UpdateUserInput {
   An object where the defined keys will be set on the `User` being updated.
   """
   patch: UserPatch!
+  id: Int!
+}
+
+"""The output of our delete `Item` mutation."""
+type DeleteItemPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Item` that was deleted by this mutation."""
+  item: Item
+  deletedItemNodeId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Item`. May be used by Relay 1."""
+  itemEdge(
+    """The method to use when ordering `Item`."""
+    orderBy: [ItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ItemsEdge
+}
+
+"""All input for the `deleteItemByNodeId` mutation."""
+input DeleteItemByNodeIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Item` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteItem` mutation."""
+input DeleteItemInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
   id: Int!
 }
 
