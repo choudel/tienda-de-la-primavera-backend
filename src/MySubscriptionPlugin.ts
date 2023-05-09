@@ -33,7 +33,7 @@ export default makeExtendSchemaPlugin(({ pgSql: sql }) => ({
           sql.fragment`tienda.user`,
           (tableAlias, sqlBuilder) => {
             sqlBuilder.where(
-              sql.fragment`${tableAlias}.user_id = ${sql.value(event.subject)}`,
+              sql.fragment`${tableAlias}.id = ${sql.value(event.subject)}`,
             );
           },
         );

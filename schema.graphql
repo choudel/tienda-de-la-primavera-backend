@@ -45,7 +45,7 @@ type Query implements Node {
     """
     condition: UserCondition
   ): UsersConnection
-  user(userId: Int!): User
+  user(id: Int!): User
 
   """Reads a single `User` using its globally unique `ID`."""
   userByNodeId(
@@ -84,9 +84,10 @@ type User implements Node {
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
-  userId: Int!
-  name: String
-  email: String
+  id: Int!
+  name: String!
+  password: String!
+  email: String!
 }
 
 """A `User` edge in the connection."""
@@ -119,10 +120,12 @@ type PageInfo {
 """Methods to use when ordering `User`."""
 enum UsersOrderBy {
   NATURAL
-  USER_ID_ASC
-  USER_ID_DESC
+  ID_ASC
+  ID_DESC
   NAME_ASC
   NAME_DESC
+  PASSWORD_ASC
+  PASSWORD_DESC
   EMAIL_ASC
   EMAIL_DESC
   PRIMARY_KEY_ASC
@@ -133,11 +136,14 @@ enum UsersOrderBy {
 A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
 input UserCondition {
-  """Checks for equality with the object’s `userId` field."""
-  userId: Int
+  """Checks for equality with the object’s `id` field."""
+  id: Int
 
   """Checks for equality with the object’s `name` field."""
   name: String
+
+  """Checks for equality with the object’s `password` field."""
+  password: String
 
   """Checks for equality with the object’s `email` field."""
   email: String
@@ -225,9 +231,10 @@ input CreateUserInput {
 
 """An input for mutations affecting `User`"""
 input UserInput {
-  userId: Int!
-  name: String
-  email: String
+  id: Int
+  name: String!
+  password: String!
+  email: String!
 }
 
 """The output of our update `User` mutation."""
@@ -274,8 +281,9 @@ input UpdateUserByNodeIdInput {
 
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
-  userId: Int
+  id: Int
   name: String
+  password: String
   email: String
 }
 
@@ -291,7 +299,7 @@ input UpdateUserInput {
   An object where the defined keys will be set on the `User` being updated.
   """
   patch: UserPatch!
-  userId: Int!
+  id: Int!
 }
 
 """The output of our delete `User` mutation."""
@@ -339,7 +347,7 @@ input DeleteUserInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  userId: Int!
+  id: Int!
 }
 
 """

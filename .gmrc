@@ -1,0 +1,10 @@
+{
+  connectionString:
+    'postgres://postgres:chouaib01mol@localhost/tienda-de-la-primavera',
+  shadowConnectionString:
+    'postgres://postgres:chouaib01mol@localhost/appdb_shadow',
+  rootConnectionString: 'postgres://postgres:chouaib01mol@localhost/postgres',
+  pgSettings: {
+    search_path: 'app_public,app_private,app_hidden,public',
+  },
+}
