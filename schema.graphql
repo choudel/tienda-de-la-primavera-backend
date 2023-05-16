@@ -127,6 +127,7 @@ type Item implements Node {
   outOfStockDate: Date
   price: BigFloat!
   sellText: String!
+  image: String
 }
 
 """The day, does not include a time."""
@@ -181,6 +182,8 @@ enum ItemsOrderBy {
   PRICE_DESC
   SELL_TEXT_ASC
   SELL_TEXT_DESC
+  IMAGE_ASC
+  IMAGE_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
 }
@@ -209,6 +212,9 @@ input ItemCondition {
 
   """Checks for equality with the object’s `sellText` field."""
   sellText: String
+
+  """Checks for equality with the object’s `image` field."""
+  image: String
 }
 
 """A connection to a list of `User` values."""
@@ -409,6 +415,7 @@ input ItemInput {
   outOfStockDate: Date
   price: BigFloat!
   sellText: String!
+  image: String
 }
 
 """The output of our create `User` mutation."""
@@ -505,6 +512,7 @@ input ItemPatch {
   outOfStockDate: Date
   price: BigFloat
   sellText: String
+  image: String
 }
 
 """All input for the `updateItem` mutation."""
