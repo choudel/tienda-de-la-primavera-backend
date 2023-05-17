@@ -9,12 +9,12 @@ type Query implements Node {
   """
   The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`.
   """
-  nodeId: ID!
+  id: ID!
 
   """Fetches an object given its globally unique `ID`."""
   node(
     """The globally unique `ID`."""
-    nodeId: ID!
+    id: ID!
   ): Node
 
   """Reads and enables pagination through a set of `Item`."""
@@ -74,19 +74,19 @@ type Query implements Node {
     """
     condition: UserCondition
   ): UsersConnection
-  item(id: Int!): Item
-  user(id: Int!): User
+  item(rowId: Int!): Item
+  user(rowId: Int!): User
 
   """Reads a single `Item` using its globally unique `ID`."""
-  itemByNodeId(
+  itemById(
     """The globally unique `ID` to be used in selecting a single `Item`."""
-    nodeId: ID!
+    id: ID!
   ): Item
 
   """Reads a single `User` using its globally unique `ID`."""
-  userByNodeId(
+  userById(
     """The globally unique `ID` to be used in selecting a single `User`."""
-    nodeId: ID!
+    id: ID!
   ): User
 }
 
@@ -95,7 +95,7 @@ interface Node {
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
-  nodeId: ID!
+  id: ID!
 }
 
 """A connection to a list of `Item` values."""
@@ -119,8 +119,8 @@ type Item implements Node {
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
-  nodeId: ID!
-  id: Int!
+  id: ID!
+  rowId: Int!
   item: String!
   lot: String!
   arrivalDate: Date!
@@ -192,8 +192,8 @@ enum ItemsOrderBy {
 A condition to be used against `Item` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
 input ItemCondition {
-  """Checks for equality with the object’s `id` field."""
-  id: Int
+  """Checks for equality with the object’s `rowId` field."""
+  rowId: Int
 
   """Checks for equality with the object’s `item` field."""
   item: String
@@ -238,8 +238,8 @@ type User implements Node {
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
-  nodeId: ID!
-  id: Int!
+  id: ID!
+  rowId: Int!
   name: String!
   password: String!
   email: String!
@@ -273,8 +273,8 @@ enum UsersOrderBy {
 A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
 input UserCondition {
-  """Checks for equality with the object’s `id` field."""
-  id: Int
+  """Checks for equality with the object’s `rowId` field."""
+  rowId: Int
 
   """Checks for equality with the object’s `name` field."""
   name: String
@@ -307,11 +307,11 @@ type Mutation {
   ): CreateUserPayload
 
   """Updates a single `Item` using its globally unique id and a patch."""
-  updateItemByNodeId(
+  updateItemById(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateItemByNodeIdInput!
+    input: UpdateItemByIdInput!
   ): UpdateItemPayload
 
   """Updates a single `Item` using a unique key and a patch."""
@@ -323,11 +323,11 @@ type Mutation {
   ): UpdateItemPayload
 
   """Updates a single `User` using its globally unique id and a patch."""
-  updateUserByNodeId(
+  updateUserById(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateUserByNodeIdInput!
+    input: UpdateUserByIdInput!
   ): UpdateUserPayload
 
   """Updates a single `User` using a unique key and a patch."""
@@ -339,11 +339,11 @@ type Mutation {
   ): UpdateUserPayload
 
   """Deletes a single `Item` using its globally unique id."""
-  deleteItemByNodeId(
+  deleteItemById(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteItemByNodeIdInput!
+    input: DeleteItemByIdInput!
   ): DeleteItemPayload
 
   """Deletes a single `Item` using a unique key."""
@@ -355,11 +355,11 @@ type Mutation {
   ): DeleteItemPayload
 
   """Deletes a single `User` using its globally unique id."""
-  deleteUserByNodeId(
+  deleteUserById(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteUserByNodeIdInput!
+    input: DeleteUserByIdInput!
   ): DeleteUserPayload
 
   """Deletes a single `User` using a unique key."""
@@ -408,7 +408,7 @@ input CreateItemInput {
 
 """An input for mutations affecting `Item`"""
 input ItemInput {
-  id: Int
+  rowId: Int
   item: String!
   lot: String!
   arrivalDate: Date!
@@ -455,7 +455,7 @@ input CreateUserInput {
 
 """An input for mutations affecting `User`"""
 input UserInput {
-  id: Int
+  rowId: Int
   name: String!
   password: String!
   email: String!
@@ -484,8 +484,8 @@ type UpdateItemPayload {
   ): ItemsEdge
 }
 
-"""All input for the `updateItemByNodeId` mutation."""
-input UpdateItemByNodeIdInput {
+"""All input for the `updateItemById` mutation."""
+input UpdateItemByIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -495,7 +495,7 @@ input UpdateItemByNodeIdInput {
   """
   The globally unique `ID` which will identify a single `Item` to be updated.
   """
-  nodeId: ID!
+  id: ID!
 
   """
   An object where the defined keys will be set on the `Item` being updated.
@@ -505,7 +505,7 @@ input UpdateItemByNodeIdInput {
 
 """Represents an update to a `Item`. Fields that are set will be updated."""
 input ItemPatch {
-  id: Int
+  rowId: Int
   item: String
   lot: String
   arrivalDate: Date
@@ -527,7 +527,7 @@ input UpdateItemInput {
   An object where the defined keys will be set on the `Item` being updated.
   """
   patch: ItemPatch!
-  id: Int!
+  rowId: Int!
 }
 
 """The output of our update `User` mutation."""
@@ -553,8 +553,8 @@ type UpdateUserPayload {
   ): UsersEdge
 }
 
-"""All input for the `updateUserByNodeId` mutation."""
-input UpdateUserByNodeIdInput {
+"""All input for the `updateUserById` mutation."""
+input UpdateUserByIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -564,7 +564,7 @@ input UpdateUserByNodeIdInput {
   """
   The globally unique `ID` which will identify a single `User` to be updated.
   """
-  nodeId: ID!
+  id: ID!
 
   """
   An object where the defined keys will be set on the `User` being updated.
@@ -574,7 +574,7 @@ input UpdateUserByNodeIdInput {
 
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
-  id: Int
+  rowId: Int
   name: String
   password: String
   email: String
@@ -592,7 +592,7 @@ input UpdateUserInput {
   An object where the defined keys will be set on the `User` being updated.
   """
   patch: UserPatch!
-  id: Int!
+  rowId: Int!
 }
 
 """The output of our delete `Item` mutation."""
@@ -605,7 +605,7 @@ type DeleteItemPayload {
 
   """The `Item` that was deleted by this mutation."""
   item: Item
-  deletedItemNodeId: ID
+  deletedItemId: ID
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -619,8 +619,8 @@ type DeleteItemPayload {
   ): ItemsEdge
 }
 
-"""All input for the `deleteItemByNodeId` mutation."""
-input DeleteItemByNodeIdInput {
+"""All input for the `deleteItemById` mutation."""
+input DeleteItemByIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -630,7 +630,7 @@ input DeleteItemByNodeIdInput {
   """
   The globally unique `ID` which will identify a single `Item` to be deleted.
   """
-  nodeId: ID!
+  id: ID!
 }
 
 """All input for the `deleteItem` mutation."""
@@ -640,7 +640,7 @@ input DeleteItemInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  id: Int!
+  rowId: Int!
 }
 
 """The output of our delete `User` mutation."""
@@ -653,7 +653,7 @@ type DeleteUserPayload {
 
   """The `User` that was deleted by this mutation."""
   user: User
-  deletedUserNodeId: ID
+  deletedUserId: ID
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -667,8 +667,8 @@ type DeleteUserPayload {
   ): UsersEdge
 }
 
-"""All input for the `deleteUserByNodeId` mutation."""
-input DeleteUserByNodeIdInput {
+"""All input for the `deleteUserById` mutation."""
+input DeleteUserByIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -678,7 +678,7 @@ input DeleteUserByNodeIdInput {
   """
   The globally unique `ID` which will identify a single `User` to be deleted.
   """
-  nodeId: ID!
+  id: ID!
 }
 
 """All input for the `deleteUser` mutation."""
@@ -688,7 +688,7 @@ input DeleteUserInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  id: Int!
+  rowId: Int!
 }
 
 """

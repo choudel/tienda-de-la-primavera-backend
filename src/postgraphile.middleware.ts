@@ -28,6 +28,7 @@ const middleware = postgraphile(
       // TODO: customise condition!
       return true;
     },
+    classicIds: true,
     enableQueryBatching: true,
     legacyRelations: 'omit',
     websocketMiddlewares: [
