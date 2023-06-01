@@ -1,0 +1,6 @@
+--! Message: add policy 
+alter table tienda.items enable ROW level SECURITY;
+
+CREATE policy update_item ON tienda.items FOR UPDATE TO tienda_person USING (person_id = nullif(current_setting('jwt.claims.person_id',TRUE),'')::integer);
+
+CREATE policy insert_item ON tienda.items FOR INSERT TO tienda_person WITH CHECK (person_id = nullif(current_setting('jwt.claims.person_id',TRUE),'')::integer);

@@ -24,11 +24,14 @@ const middleware = postgraphile(
     exportGqlSchemaPath: 'schema.graphql',
     graphiql: true,
     enhanceGraphiql: true,
+    pgDefaultRole: 'tienda_anonymous',
     allowExplain(req) {
       // TODO: customise condition!
       return true;
     },
     classicIds: true,
+    jwtPgTypeIdentifier: 'tienda.jwt',
+    jwtSecret: 'secret_for_jwts',
     enableQueryBatching: true,
     legacyRelations: 'omit',
     websocketMiddlewares: [
