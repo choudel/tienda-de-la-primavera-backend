@@ -1,5 +1,5 @@
---! Previous: sha1:262edea54dd1f47d9bb5a7efc6588cd69c69196c
---! Hash: sha1:b61e4cf0169a649a2a83955a7c905afcf9574135
+--! Previous: sha1:b59649a4b0ad27be4e9e496ec9a52641dee89d87
+--! Hash: sha1:65e0e632d92a11a4f70f9597c5ac9d62401043c3
 --! Message: auth function
 
 CREATE FUNCTION tienda.authenticate (email text, password text)

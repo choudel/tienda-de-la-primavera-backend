@@ -9,3 +9,9 @@ create table tienda_private.user_account(
 );
 
 create index user_account_email_idx ON tienda_private.user_account (email);
+
+create table tienda_private.refresh_tokens(
+    token text,
+    person_id integer PRIMARY KEY REFERENCES tienda.user(id) ON DELETE CASCADE,
+    expires_at text 
+);

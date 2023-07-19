@@ -1,5 +1,5 @@
---! Previous: sha1:b61e4cf0169a649a2a83955a7c905afcf9574135
---! Hash: sha1:504166a00190321571a888d0be2281e484a0b3c0
+--! Previous: sha1:bb3e9ca8bb46958f517434abd10bde5f6e10008f
+--! Hash: sha1:caa34ae106d1bb7173fab40875d44ab1975a80e6
 --! Message: role grants
 
 ALTER DEFAULT privileges REVOKE EXECUTE ON functions FROM public;
