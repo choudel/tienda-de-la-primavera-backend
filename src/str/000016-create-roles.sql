@@ -1,5 +1,5 @@
---! Previous: sha1:7050b22684afc27bf266447c02eb333730504d33
---! Hash: sha1:1862a798ed7175dd64eae42b7f504083a09201c8
+--! Previous: sha1:70b21af611c83ff72bb2bb0082f5b3b198938b42
+--! Hash: sha1:a32a439e67755efce667c6706a3265adb56de4e0
 --! Message: create roles
 
 DROP ROLE IF EXISTS tienda_postgraphile;

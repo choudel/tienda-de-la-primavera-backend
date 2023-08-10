@@ -1,5 +1,5 @@
---! Previous: sha1:8f6677f70259d6a7898525ab44963e373338c4c3
---! Hash: sha1:b59649a4b0ad27be4e9e496ec9a52641dee89d87
+--! Previous: sha1:14d9c217ee74078bfdf6a53c370f17bfb2dda7eb
+--! Hash: sha1:c3c09cf04a61551e461083676520007eea26f37f
 --! Message: auth type
 
 CREATE TYPE tienda.authenticate_result AS (

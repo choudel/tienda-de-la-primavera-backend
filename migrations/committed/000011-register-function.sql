@@ -1,5 +1,5 @@
---! Previous: sha1:c8533e318f77689a1f3aa1192fa449188c92ac49
---! Hash: sha1:b2b5d4773914f880acc65e60c2cec28ce50bdfe1
+--! Previous: sha1:4dfb707554648c5e2364188d88ebc7d862b52896
+--! Hash: sha1:7050b22684afc27bf266447c02eb333730504d33
 --! Message: register function
 
 create function tienda.register_user (name text, email text,password text)

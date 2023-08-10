@@ -702,12 +702,17 @@ type AuthenticatePayload {
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
-  jwt: Jwt
+  authenticateResult: AuthenticateResult
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
+}
+
+type AuthenticateResult {
+  jwt: Jwt
+  refreshtoken: String
 }
 
 """

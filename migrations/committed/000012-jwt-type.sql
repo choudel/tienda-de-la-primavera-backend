@@ -1,5 +1,5 @@
---! Previous: sha1:b2b5d4773914f880acc65e60c2cec28ce50bdfe1
---! Hash: sha1:8f6677f70259d6a7898525ab44963e373338c4c3
+--! Previous: sha1:7050b22684afc27bf266447c02eb333730504d33
+--! Hash: sha1:14d9c217ee74078bfdf6a53c370f17bfb2dda7eb
 --! Message: jwt type
 
 CREATE TYPE tienda.jwt AS (
